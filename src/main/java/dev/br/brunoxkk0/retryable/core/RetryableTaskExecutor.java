@@ -1,24 +1,16 @@
 package dev.br.brunoxkk0.retryable.core;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RetryableTaskExecutor {
 
-    private static final Queue<RetryableTask<?>> taskQueue = new LinkedList<>();
-    private static final AtomicBoolean atomicBooleanRunning = new AtomicBoolean(true);
+    private final int max_attempts;
+    private final ThreadPoolExecutor executor;
 
-    private final int MAX_ATTEMPTS = 3;
-
-    private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3, r -> {
-        Thread thread = new Thread(r);
-        thread.setDaemon(false);
-        thread.setName("RetryableTask");
-        return thread;
-    });
+    public RetryableTaskExecutor(int max_attempts, ThreadPoolExecutor executor){
+        this.max_attempts = max_attempts;
+        this.executor = executor;
+    }
 
     public void queue(RetryableTask<?> task){
 
@@ -31,47 +23,36 @@ public class RetryableTaskExecutor {
             task.updateState(TaskState.QUEUED);
             task.setRetryableTaskExecutorInstance(this);
 
-            taskQueue.add(task);
+            executor.submit(createControllableTask(task));
         }
 
     }
 
-    public RetryableTaskExecutor(){
+    private Runnable createControllableTask(RetryableTask<?> task){
+        return () -> {
 
-        executor.submit(() -> {
+            if(task != null){
 
-           while (atomicBooleanRunning.get()){
+                if(task.getState().equals(TaskState.ERROR) || task.getState().equals(TaskState.DONE)){
+                    return;
+                }
 
-               RetryableTask<?> task = taskQueue.poll();
+                if(task.getAttempt() > max_attempts){
+                    task.updateState(TaskState.ERROR);
+                    System.out.println("Task:..." + task.getName() + " STATE: " + task.getState());
+                    return;
+                }
 
-               if(task != null){
+                task.updateState((task.getAttempt() == 0) ? TaskState.PROCESSING : TaskState.REPROCESSING);
 
-                   if(task.getState().equals(TaskState.ERROR) || task.getState().equals(TaskState.DONE)){
-                       return;
-                   }
+                System.out.println("Task:..." + task.getName() + " STATE: " + task.getState() + " TRY: " + task.getAttempt());
 
-                   if(task.getAttempt() > MAX_ATTEMPTS){
-                       task.updateState(TaskState.ERROR);
-                       System.out.println("Task:..." + task.getName() + " STATE: " + task.getState());
-                       return;
-                   }
-
-                   task.updateState((task.getAttempt() == 0) ? TaskState.PROCESSING : TaskState.REPROCESSING);
-
-                   System.out.println("Task:..." + task.getName() + " STATE: " + task.getState() + " TRY: " + task.getAttempt());
-
-                   task.run();
-
-               }
-           }
-        });
-    }
-
-    public void stop(){
-        atomicBooleanRunning.set(false);
+                task.run();
+            }
+        };
     }
 
     public int getMaxAttempts() {
-        return MAX_ATTEMPTS;
+        return max_attempts;
     }
 }
