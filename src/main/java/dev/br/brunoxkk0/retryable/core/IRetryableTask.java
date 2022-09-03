@@ -1,6 +1,6 @@
 package dev.br.brunoxkk0.retryable.core;
 
-public interface IRetryableTask extends Runnable{
+public interface IRetryableTask<T> extends Runnable{
 
     TaskState getState();
 

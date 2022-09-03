@@ -1,89 +1,76 @@
 package dev.br.brunoxkk0.retryable.test;
 
+import dev.br.brunoxkk0.retryable.builder.RetryableTaskBuilder;
 import dev.br.brunoxkk0.retryable.core.RetryableTask;
 import dev.br.brunoxkk0.retryable.core.RetryableTaskExecutor;
-import dev.br.brunoxkk0.retryable.core.TaskState;
 
-import java.util.Random;
 
 public class Main {
+
     public static void main(String[] args) {
 
         RetryableTaskExecutor retryableTaskExecutor = new RetryableTaskExecutor();
 
-        retryableTaskExecutor.queue(new RetryableTask() {
+        RetryableTask<String> s = RetryableTaskBuilder.<String>create().named("Teste 1").of((task) -> {
+            Thread.sleep(1000);
 
-            @Override
-            public void run() {
-
-                System.out.println("Teste nº1");
-
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                System.out.println("Teste nº1 ~~ FIM");
-
-                if(new Random().nextInt(2) == 0){
-                    updateState(TaskState.DONE);
-                }
-
-                requeueTask(retryableTaskExecutor);
-
+            if(task.getAttempt() != 3){
+                throw new Exception("Deu erro hein" + task.getName());
             }
 
-        });
+            return "Thread " + task.getName() + " Passou";
+        }).done((taskReturn) -> {
+            System.out.println("Retorno do objeto " + taskReturn.task().getName() + ": " + taskReturn.returnValue());
+        }).error((e) -> {
+            System.out.println("Error: " + e.getLocalizedMessage());
+        }).build();
 
-        retryableTaskExecutor.queue(new RetryableTask() {
+        retryableTaskExecutor.queue(s);
 
-            @Override
-            public void run() {
+        RetryableTask<String> s2 = RetryableTaskBuilder.<String>create().named("Teste 2").of((task) -> {
+            Thread.sleep(1000);
 
-                System.out.println("Teste nº2");
-
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                System.out.println("Teste nº2 ~~ FIM");
-
-                if(new Random().nextInt(2) == 0){
-                    updateState(TaskState.DONE);
-                }
-
-                requeueTask(retryableTaskExecutor);
-
+            if(task.getAttempt() != 3){
+                throw new Exception("Deu erro hein" + task.getName());
             }
 
-        });
+            return "Thread " + task.getName() + " Passou";
+        }).done((taskReturn) -> {
+            System.out.println("Retorno do objeto " + taskReturn.task().getName() + ": " + taskReturn.returnValue());
+        }).error((e) -> {
+            System.out.println("Error: " + e.getLocalizedMessage());
+        }).build();
 
-        retryableTaskExecutor.queue(new RetryableTask() {
+        retryableTaskExecutor.queue(s2);
 
-            @Override
-            public void run() {
 
-                System.out.println("Teste nº3");
+        for(int i = 0; i < 5; i++) {
+            retryableTaskExecutor.queue(new RetryableTask<String>(" - " + i) {
 
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                @Override
+                public String doLogic() throws Exception {
+
+                    Thread.sleep(1000);
+
+                    if (getAttempt() != 3) {
+                        throw new Exception("Deu erro hein" + getName());
+                    }
+
+                    return "Thread " + getName() + " Passou";
                 }
 
-                System.out.println("Teste nº3 ~~ FIM");
-
-                if(new Random().nextInt(2) == 0){
-                    updateState(TaskState.DONE);
+                @Override
+                public void onDone(String object) {
+                    System.out.println("Retorno do objeto " + getName() + ": " + object);
                 }
 
-                requeueTask(retryableTaskExecutor);
+                @Override
+                public <E extends Exception> void onError(E exception) {
+                    System.out.println("Error: " + exception.getLocalizedMessage());
+                }
 
-            }
+            });
 
-        });
+        }
     }
 }

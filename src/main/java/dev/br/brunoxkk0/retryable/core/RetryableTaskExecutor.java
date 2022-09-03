@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RetryableTaskExecutor {
 
-    private static final Queue<RetryableTask> taskQueue = new LinkedList<>();
+    private static final Queue<RetryableTask<?>> taskQueue = new LinkedList<>();
     private static final AtomicBoolean atomicBooleanRunning = new AtomicBoolean(true);
 
-    private static final int MAX_ATTEMPTS = 3;
+    private final int MAX_ATTEMPTS = 3;
 
     private static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3, r -> {
         Thread thread = new Thread(r);
@@ -20,7 +20,7 @@ public class RetryableTaskExecutor {
         return thread;
     });
 
-    public void queue(RetryableTask task){
+    public void queue(RetryableTask<?> task){
 
         if(task != null){
 
@@ -29,6 +29,8 @@ public class RetryableTaskExecutor {
             }
 
             task.updateState(TaskState.QUEUED);
+            task.setRetryableTaskExecutorInstance(this);
+
             taskQueue.add(task);
         }
 
@@ -40,7 +42,7 @@ public class RetryableTaskExecutor {
 
            while (atomicBooleanRunning.get()){
 
-               RetryableTask task = taskQueue.poll();
+               RetryableTask<?> task = taskQueue.poll();
 
                if(task != null){
 
@@ -50,13 +52,13 @@ public class RetryableTaskExecutor {
 
                    if(task.getAttempt() > MAX_ATTEMPTS){
                        task.updateState(TaskState.ERROR);
-                       System.out.println("Task:... STATE: " + task.getState());
+                       System.out.println("Task:..." + task.getName() + " STATE: " + task.getState());
                        return;
                    }
 
                    task.updateState((task.getAttempt() == 0) ? TaskState.PROCESSING : TaskState.REPROCESSING);
 
-                   System.out.println("Task:... STATE: " + task.getState() + " TRY: " + task.getAttempt());
+                   System.out.println("Task:..." + task.getName() + " STATE: " + task.getState() + " TRY: " + task.getAttempt());
 
                    task.run();
 
@@ -69,4 +71,7 @@ public class RetryableTaskExecutor {
         atomicBooleanRunning.set(false);
     }
 
+    public int getMaxAttempts() {
+        return MAX_ATTEMPTS;
+    }
 }
