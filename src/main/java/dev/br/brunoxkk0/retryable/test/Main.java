@@ -21,7 +21,7 @@ public class Main {
 
         RetryableTaskExecutor retryableTaskExecutor = new RetryableTaskExecutor(5, poolExecutor);
 
-        RetryableTask<String> s = RetryableTaskBuilder.<String>create().named("Teste 1").of((task) -> {
+        RetryableTask<String> s = RetryableTaskBuilder.<String>newBuilder().named("Teste 1").of((task) -> {
 
             Thread.sleep(1000);
 
@@ -38,7 +38,7 @@ public class Main {
 
         retryableTaskExecutor.queue(s);
 
-        RetryableTask<String> s2 = RetryableTaskBuilder.<String>create().named("Teste 2").of((task) -> {
+        RetryableTaskBuilder.<String>newBuilder().named("Teste 2").of((task) -> {
             Thread.sleep(1000);
 
             if(task.getAttempt() != 2){
@@ -50,8 +50,6 @@ public class Main {
             System.out.println("Retorno do objeto " + taskReturn.task().getName() + ": " + taskReturn.returnValue());
         }).error((e) -> {
             System.out.println("Error: " + e.error().getLocalizedMessage() + " Task: " + e.task().getName());
-        }).build();
-
-        retryableTaskExecutor.queue(s2);
+        }).buildAndQueue(retryableTaskExecutor);
     }
 }

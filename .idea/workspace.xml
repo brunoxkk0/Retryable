@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bf13ab8-63c8-4aab-8d63-27dfa71c2b25" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/core/RetryableTaskError.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/builder/RetryableTaskBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/builder/RetryableTaskBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/builder/RetryableTaskError.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/builder/RetryableTaskError.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/test/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/br/brunoxkk0/retryable/test/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,16 +44,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dev.br.brunoxkk0.retryable.test.Main" />
@@ -86,7 +90,7 @@
       <workItem from="1662160390083" duration="3181000" />
       <workItem from="1662209774006" duration="8678000" />
       <workItem from="1662298342224" duration="1037000" />
-      <workItem from="1662323113880" duration="1672000" />
+      <workItem from="1662323113880" duration="5404000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1661976254622</created>
@@ -130,7 +134,14 @@
       <option name="project" value="LOCAL" />
       <updated>1662324471991</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Criado RetryableTaskError para ajudar a tratar erros quando criado tasks através do builder.">
+      <created>1662325116496</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1662325116496</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -143,6 +154,7 @@
     <MESSAGE value="Alterado lógica de criação do builder para evitar erros em runtime não esperados." />
     <MESSAGE value="Removido generic type do declaração da interface do IRetryableTask" />
     <MESSAGE value="Removido mensagens de debug do RetryableTaskExecutor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removido mensagens de debug do RetryableTaskExecutor" />
+    <MESSAGE value="Criado RetryableTaskError para ajudar a tratar erros quando criado tasks através do builder." />
+    <option name="LAST_COMMIT_MESSAGE" value="Criado RetryableTaskError para ajudar a tratar erros quando criado tasks através do builder." />
   </component>
 </project>

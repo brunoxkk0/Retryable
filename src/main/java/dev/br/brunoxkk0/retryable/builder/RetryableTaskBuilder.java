@@ -1,6 +1,7 @@
 package dev.br.brunoxkk0.retryable.builder;
 
 import dev.br.brunoxkk0.retryable.core.RetryableTask;
+import dev.br.brunoxkk0.retryable.core.RetryableTaskExecutor;
 import dev.br.brunoxkk0.retryable.function.Execute;
 
 import java.util.function.Consumer;
@@ -12,7 +13,7 @@ public class RetryableTaskBuilder<T> {
     private Consumer<RetryableTaskError> onError;
     private String name;
 
-    public static <T> RetryableTaskBuilder<T> create(){
+    public static <T> RetryableTaskBuilder<T> newBuilder(){
         return new RetryableTaskBuilder<T>();
     }
 
@@ -64,6 +65,10 @@ public class RetryableTaskBuilder<T> {
                     onError.accept(new RetryableTaskError(this, exception));
             }
         };
+    }
+
+    public void buildAndQueue(RetryableTaskExecutor taskExecutor){
+        taskExecutor.queue(build());
     }
 
 }
