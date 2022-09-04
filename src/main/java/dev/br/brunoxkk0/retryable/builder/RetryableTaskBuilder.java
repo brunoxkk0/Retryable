@@ -1,7 +1,6 @@
 package dev.br.brunoxkk0.retryable.builder;
 
 import dev.br.brunoxkk0.retryable.core.RetryableTask;
-import dev.br.brunoxkk0.retryable.core.RetryableTaskReturn;
 import dev.br.brunoxkk0.retryable.function.Execute;
 
 import java.util.function.Consumer;
@@ -10,7 +9,7 @@ public class RetryableTaskBuilder<T> {
 
     private Execute<T> doLogic;
     private Consumer<RetryableTaskReturn<T>> onDone;
-    private Consumer<Exception> onError;
+    private Consumer<RetryableTaskError> onError;
     private String name;
 
     public static <T> RetryableTaskBuilder<T> create(){
@@ -34,7 +33,7 @@ public class RetryableTaskBuilder<T> {
         return this;
     }
 
-    public RetryableTaskBuilder<T> error(Consumer<Exception> onError){
+    public RetryableTaskBuilder<T> error(Consumer<RetryableTaskError> onError){
         this.onError = onError;
         return this;
     }
@@ -62,7 +61,7 @@ public class RetryableTaskBuilder<T> {
             @Override
             public <E extends Exception> void onError(E exception) {
                 if(onError != null)
-                    onError.accept(exception);
+                    onError.accept(new RetryableTaskError(this, exception));
             }
         };
     }

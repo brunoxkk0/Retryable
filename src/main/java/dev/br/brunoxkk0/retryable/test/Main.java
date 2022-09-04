@@ -33,7 +33,7 @@ public class Main {
         }).done((taskReturn) -> {
             System.out.println("Retorno do objeto " + taskReturn.task().getName() + ": " + taskReturn.returnValue());
         }).error((e) -> {
-            System.out.println("Error: " + e.getLocalizedMessage());
+            System.out.println("Error: " + e.error().getLocalizedMessage() + " Task: " + e.task().getName());
         }).build();
 
         retryableTaskExecutor.queue(s);
@@ -49,7 +49,7 @@ public class Main {
         }).done((taskReturn) -> {
             System.out.println("Retorno do objeto " + taskReturn.task().getName() + ": " + taskReturn.returnValue());
         }).error((e) -> {
-            System.out.println("Error: " + e.getLocalizedMessage());
+            System.out.println("Error: " + e.error().getLocalizedMessage() + " Task: " + e.task().getName());
         }).build();
 
         retryableTaskExecutor.queue(s2);
