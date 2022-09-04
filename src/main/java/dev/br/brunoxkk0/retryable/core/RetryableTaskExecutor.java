@@ -30,7 +30,6 @@ public class RetryableTaskExecutor {
 
     private Runnable createControllableTask(RetryableTask<?> task){
         return () -> {
-
             if(task != null){
 
                 if(task.getState().equals(TaskState.ERROR) || task.getState().equals(TaskState.DONE)){
@@ -39,14 +38,10 @@ public class RetryableTaskExecutor {
 
                 if(task.getAttempt() > max_attempts){
                     task.updateState(TaskState.ERROR);
-                    System.out.println("Task:..." + task.getName() + " STATE: " + task.getState());
                     return;
                 }
 
                 task.updateState((task.getAttempt() == 0) ? TaskState.PROCESSING : TaskState.REPROCESSING);
-
-                System.out.println("Task:..." + task.getName() + " STATE: " + task.getState() + " TRY: " + task.getAttempt());
-
                 task.run();
             }
         };
