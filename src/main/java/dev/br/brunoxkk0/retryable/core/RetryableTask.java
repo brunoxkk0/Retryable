@@ -1,6 +1,6 @@
 package dev.br.brunoxkk0.retryable.core;
 
-public abstract class RetryableTask<T> implements IRetryableTask<T>{
+public abstract class RetryableTask<T> implements IRetryableTask {
 
     private TaskState currentState = TaskState.WAITING;
     private int currentAttempt = 0;
