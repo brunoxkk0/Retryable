@@ -42,8 +42,8 @@ public class RetryableTaskBuilder<T> {
 
     public RetryableTask<T> build(){
 
-        assert doLogic != null;
-        assert onDone != null;
+        if(doLogic == null || onDone == null)
+            throw new IllegalArgumentException("Invalid retryable task.");
 
         if(name == null)
             name = "";
